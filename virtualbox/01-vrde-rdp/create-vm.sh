@@ -45,6 +45,10 @@ VBoxManage modifyvm "$VM_NAME" --boot1 dvd --boot2 disk --boot3 none --boot4 non
 
 echo "== Activando VRDE (escritorio remoto) en puerto ${VRDE_PORT} =="
 VBoxManage modifyvm "$VM_NAME" --vrde on --vrdeport "$VRDE_PORT" --vrdeaddress ""
+# Seguridad RDP estandar (sin TLS). El default "TLS" usa un cert autofirmado que
+# Remmina/FreeRDP rechazan o cuelgan; en una red host-only aislada el cifrado TLS
+# no aporta. Con "RDP" cualquier cliente conecta sin lidiar con certificados.
+VBoxManage modifyvm "$VM_NAME" --vrdeproperty "Security/Method=RDP"
 
 echo
 echo "✔ VM '${VM_NAME}' creada. Siguiente: ./start-vm-vrde.sh"

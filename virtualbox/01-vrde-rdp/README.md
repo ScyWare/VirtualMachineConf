@@ -112,6 +112,25 @@ Debe entrar directo a `PS C:\Users\vboxuser>`. Listo: actualiza el `.env` del
 malware-agent con `VM_NAME=SandboxWindows10`, `IP=192.168.56.10`, credenciales y
 `SNAPSHOT=CleanState`.
 
+## Solución de problemas de conexión RDP
+
+- **`Could not connect ... via TLS` o el cliente se cuelga en "Connecting…":** VRDE
+  trae por defecto `Security/Method = "TLS"` con un certificado autofirmado que
+  Remmina/FreeRDP rechazan o no negocian. `create-vm.sh` ya fuerza `Security/Method=RDP`,
+  pero si tu VM se creó antes de ese fix, córrelo con la VM apagada:
+  ```bash
+  VBoxManage controlvm SandboxWindows10 poweroff
+  VBoxManage modifyvm SandboxWindows10 --vrdeproperty "Security/Method=RDP"
+  VBoxManage startvm SandboxWindows10 --type headless
+  ```
+  Verifícalo con `VBoxManage showvminfo SandboxWindows10 | grep Security/Method`.
+- **Remmina:** en el perfil, pestaña *Advanced* → *Security protocol negotiation* → **RDP**.
+- **xfreerdp3:** `xfreerdp3 /v:<IP>:3389 /sec:rdp /size:1024x768` (en FreeRDP 3 el binario
+  es `xfreerdp3`).
+- **"Press any key to boot from CD or DVD…":** conéctate rápido y pulsa una tecla dentro
+  de la ventana para bootear del ISO. Si se pasa y ves *"No bootable medium"*, reinicia
+  con `VBoxManage controlvm SandboxWindows10 reset` (la sesión RDP sigue viva).
+
 ## Seguridad
 
 Tras el paso 4 la VM **no tiene salida a Internet ni a la LAN**. VRDE solo se usó
