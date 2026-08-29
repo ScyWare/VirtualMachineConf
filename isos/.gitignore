@@ -1,0 +1,6 @@
+# Los ISOs son enormes (varios GB): NUNCA se suben a GitHub.
+# Ignoramos todo el contenido de esta carpeta...
+*
+# ...excepto los marcadores que sí queremos versionar.
+!.gitignore
+!README.md

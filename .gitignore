@@ -1,0 +1,17 @@
+# Imágenes de instalación (la carpeta isos/ tiene su propio .gitignore,
+# pero cubrimos aquí cualquier ISO suelta en el repo por si acaso).
+*.iso
+*.vdi
+*.qcow2
+
+# Basura del SO / editores
+.DS_Store
+*~
+*.swp
+
+
+
+#Mis cosas
+_docs/
+.txt
+z1.txt
