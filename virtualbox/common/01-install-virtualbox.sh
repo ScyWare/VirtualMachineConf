@@ -56,8 +56,12 @@ lsmod | grep -q vboxdrv && echo "  vboxdrv cargado OK"
 echo "== [6/6] Extension Pack + grupo vboxusers =="
 # El Extension Pack añade VRDE (usado por el camino 01), USB2/3, etc.
 VBOX_VERSION="$(VBoxManage --version | sed 's/_.*//; s/r.*//')"
-EXTPACK_URL="https://download.virtualbox.org/virtualbox/${VBOX_VERSION}/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack"
-TMP_EXT="/tmp/vbox-extpack.vbox-extpack"
+# IMPORTANTE: conservar el nombre OFICIAL del archivo. VBoxManage deriva el nombre
+# del pack desde el nombre del archivo y lo compara con el XML interno; si lo renombras
+# falla con "Extension pack name mismatch".
+EXTPACK_FILE="Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack"
+EXTPACK_URL="https://download.virtualbox.org/virtualbox/${VBOX_VERSION}/${EXTPACK_FILE}"
+TMP_EXT="/tmp/${EXTPACK_FILE}"
 if curl -fsSL "$EXTPACK_URL" -o "$TMP_EXT"; then
   yes | VBoxManage extpack install --replace "$TMP_EXT" || echo "!! No se pudo instalar el Extension Pack (opcional)"
   rm -f "$TMP_EXT"
