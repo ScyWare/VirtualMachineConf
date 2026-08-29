@@ -17,32 +17,46 @@ Puedes sobreescribir la ruta con la variable `ISO_PATH` en cualquier script.
 El ISO está en el proyecto `malware-agent`:
 `malware-agent/_docs/Win10_22H2_Spanish_Mexico_x64v1.iso`
 
+> ⚠️ **Ojo con las rutas:** en el portátil el repo está en
+> `~/Documents/projects/ScyWare/VirtualMachineConf`, pero en el server se clonó en
+> `~/ScyWare/VirtualMachineConf`. Los ejemplos usan la ruta **del server** como
+> destino; ajústala si clonaste en otro sitio.
+
 ### Opción A — rsync (recomendado para archivos grandes: reanudable + progreso)
 
+**Requisito:** `rsync` debe estar instalado en **ambos** extremos. El server recién
+instalado no lo trae; instálalo una vez:
+
 ```bash
-# Desde tu portátil (donde vive el ISO):
+ssh somath@somath-server 'sudo apt update && sudo apt install -y rsync'
+```
+
+Luego, desde tu portátil (donde vive el ISO):
+
+```bash
 rsync -avhP --partial \
   ~/Documents/projects/malware-agent/_docs/Win10_22H2_Spanish_Mexico_x64v1.iso \
-  somath@somath-server:~/Documents/projects/ScyWare/VirtualMachineConf/isos/Win10_x64.iso
+  somath@somath-server:~/ScyWare/VirtualMachineConf/isos/Win10_x64.iso
 ```
 
 `--partial` deja reanudar si se corta la transferencia; `-P` muestra progreso.
 
-### Opción B — scp (más simple)
+### Opción B — scp (más simple, sin instalar nada)
 
 ```bash
 scp ~/Documents/projects/malware-agent/_docs/Win10_22H2_Spanish_Mexico_x64v1.iso \
-  somath@somath-server:~/Documents/projects/ScyWare/VirtualMachineConf/isos/Win10_x64.iso
+  somath@somath-server:~/ScyWare/VirtualMachineConf/isos/Win10_x64.iso
 ```
 
-> Ajusta las rutas a donde tengas clonado el repo en cada máquina.
+La contra: si se corta a mitad, `scp` empieza de cero (no reanuda).
 
 ## Verificar la integridad (opcional pero recomendado)
 
-En el server, tras la copia, compara el hash con el del origen:
+Tras la copia, compara el hash en ambas máquinas (deben coincidir):
 
 ```bash
-sha256sum isos/Win10_x64.iso
+# en el portátil:
+sha256sum ~/Documents/projects/malware-agent/_docs/Win10_22H2_Spanish_Mexico_x64v1.iso
+# en el server:
+ssh somath@somath-server 'sha256sum ~/ScyWare/VirtualMachineConf/isos/Win10_x64.iso'
 ```
-
-Debe coincidir con el `sha256sum` del archivo original en tu portátil.
