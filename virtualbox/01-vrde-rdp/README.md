@@ -15,8 +15,37 @@ corre en tu máquina).
 - Un ISO de Windows 10 en el server, en la carpeta `isos/` del repo (traído por SSH).
   Ver [`../../isos/README.md`](../../isos/README.md). Por defecto los scripts buscan
   `<repo>/isos/Win10_x64.iso`.
-- Un cliente RDP en tu portátil: **Remmina** (Linux), **mstsc** (Windows) o
-  **Microsoft Remote Desktop** (Mac).
+- Un cliente RDP **en tu portátil** (no en el server) — ver instalación abajo.
+
+### Instalar un cliente RDP en el portátil
+
+El cliente RDP corre en la máquina desde la que te conectas (tu portátil), no en el
+server. Comprueba si ya tienes alguno:
+
+```bash
+command -v remmina xfreerdp xfreerdp3 rdesktop 2>/dev/null || echo "ninguno instalado"
+```
+
+**Linux (Debian/Ubuntu) — Remmina (GUI, recomendado):** más cómodo para la
+instalación interactiva de Windows (ves la pantalla y haces clic).
+
+```bash
+sudo apt update && sudo apt install -y remmina remmina-plugin-rdp
+```
+
+Luego: abre Remmina → nueva conexión → protocolo **RDP**, servidor
+`<IP-del-server>:3389` → Conectar.
+
+**Linux — xfreerdp (CLI, alternativa):**
+
+```bash
+sudo apt install -y freerdp3-x11
+# OJO: en FreeRDP 3 el binario se llama xfreerdp3 (no xfreerdp)
+xfreerdp3 /v:<IP-del-server>:3389 /u:vboxuser
+```
+
+**Windows:** `mstsc` (Conexión a Escritorio remoto, ya viene con el SO) → `<IP>:3389`.
+**Mac:** *Windows App* / *Microsoft Remote Desktop* (App Store).
 
 ## Pasos
 
