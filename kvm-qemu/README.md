@@ -23,6 +23,21 @@ kernel. La contra: el agente (`WindowsVMSandboxToolKit.py`) está escrito contra
 - VT-x (confirmado) y `/dev/kvm` presente (`ls -l /dev/kvm`).
 - Debian 13; todo viene de los repos oficiales (sin repos externos).
 
+## ⚠️ Incompatible con VirtualBox (VT-x)
+
+KVM y VirtualBox **no pueden usar VT-x a la vez**. Si vienes del camino
+[`../virtualbox/`](../virtualbox/) y blacklisteaste los módulos de KVM, KVM no
+funcionará hasta revertirlo:
+
+```bash
+sudo rm -f /etc/modprobe.d/blacklist-kvm.conf
+sudo update-initramfs -u
+sudo reboot
+```
+
+Tras el reboot, verifica que `kvm_intel` está cargado (`lsmod | grep kvm`) y que
+**ninguna VM de VirtualBox está corriendo** (`VBoxManage list runningvms`).
+
 ## Pasos
 
 ```bash

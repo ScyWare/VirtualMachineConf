@@ -48,6 +48,11 @@ VirtualMachineConf/
 2. Elegir **uno** de los 3 caminos para instalar Windows y dejar el snapshot `CleanState`.
 3. (Opcional / futuro) evaluar `kvm-qemu/` como reemplazo más nativo del hipervisor.
 
+> ⚠️ **VirtualBox y KVM/QEMU son mutuamente excluyentes:** ambos necesitan VT-x y solo
+> uno puede tenerlo a la vez. Si `kvm_intel` está cargado, VirtualBox falla con
+> `VERR_VMX_IN_VMX_ROOT_MODE`; hay que descargar KVM (`sudo modprobe -r kvm_intel kvm`)
+> o blacklistearlo. Detalles en [`virtualbox/README.md`](virtualbox/README.md#-conflicto-con-kvm-vt-x).
+
 ## Convenciones comunes
 
 Todos los scripts comparten estas variables (definidas al inicio de cada uno, y

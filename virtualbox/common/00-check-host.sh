@@ -21,9 +21,9 @@ fi
 # 2) Módulo KVM cargado (compite con VirtualBox por VT-x en kernels viejos;
 #    en 7.x/6.12 conviven, pero lo reportamos)
 if lsmod | grep -q '^kvm'; then
-  warn "Módulo kvm cargado. VirtualBox 7.x convive con KVM, pero si ves errores de VT-x, descárgalo: sudo modprobe -r kvm_intel kvm"
+  warn "Módulo KVM cargado: BLOQUEARÁ a VirtualBox (VERR_VMX_IN_VMX_ROOT_MODE). Descárgalo: sudo modprobe -r kvm_intel kvm  (ver virtualbox/README.md → Conflicto con KVM)"
 else
-  ok "KVM no está acaparando VT-x"
+  ok "KVM no acapara VT-x ahora (ojo: podría cargarse después; si startvm falla por VT-x, descárgalo)"
 fi
 
 # 3) Secure Boot (debe estar desactivado para DKMS sin firmar)

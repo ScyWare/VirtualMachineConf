@@ -40,3 +40,30 @@ server). Si más adelante quieres reconstruir la VM de forma repetible, invierte
   rango `192.168.56.0/21` viene permitido por defecto; `02-setup-hostonly-network.sh`
   lo verifica.
 - Con Secure Boot desactivado (ya es el caso), DKMS compila `vboxdrv` sin firmar el módulo.
+
+## ⚠️ Conflicto con KVM (VT-x)
+
+**VirtualBox y KVM/QEMU no pueden usar VT-x al mismo tiempo** (ver [`../kvm-qemu/`](../kvm-qemu/)).
+Si el módulo `kvm_intel` está cargado, `startvm` falla con:
+
+```
+VT-x is being used by another hypervisor (VERR_VMX_IN_VMX_ROOT_MODE)
+```
+
+Descarga los módulos de KVM (seguro si `lsmod | grep kvm` muestra `0` usuarios en `kvm_intel`):
+
+```bash
+sudo modprobe -r kvm_intel kvm
+lsmod | grep kvm || echo "KVM descargado ✔"
+```
+
+Para que no se recargue tras reboot (recomendado si te quedas con VirtualBox):
+
+```bash
+echo -e "blacklist kvm_intel\nblacklist kvm" | sudo tee /etc/modprobe.d/blacklist-kvm.conf
+sudo update-initramfs -u
+```
+
+> Si algún día quieres probar `kvm-qemu/`, **revierte** el blacklist:
+> `sudo rm /etc/modprobe.d/blacklist-kvm.conf && sudo update-initramfs -u && sudo reboot`.
+> No puedes tener ambos hipervisores activos a la vez.
