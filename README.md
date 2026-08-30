@@ -7,6 +7,10 @@ El objetivo es correr una VM de **Windows 10** aislada (sandbox de ransomware) q
 el agente [`malware-agent`](../../malware-agent) controla por CLI (`VBoxManage` /
 `virsh`) + SSH, revirtiendo a un snapshot limpio (`CleanState`) tras cada ejecución.
 
+> 📖 **¿Montándolo de cero?** Sigue [`GUIA-COMPLETA.md`](GUIA-COMPLETA.md): el recorrido
+> secuencial de punta a punta (del ISO al agente) con los baches reales y sus arreglos.
+> Este README es el índice/referencia de cada carpeta.
+
 ## Servidor objetivo
 
 | | |
