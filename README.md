@@ -10,6 +10,10 @@ el agente [`malware-agent`](../../malware-agent) controla por CLI (`VBoxManage` 
 > 📖 **¿Montándolo de cero?** Sigue [`GUIA-COMPLETA.md`](GUIA-COMPLETA.md): el recorrido
 > secuencial de punta a punta (del ISO al agente) con los baches reales y sus arreglos.
 > Este README es el índice/referencia de cada carpeta.
+>
+> 🧰 **¿Aprendiendo VirtualBox?** [`COMANDOS-VIRTUALBOX.md`](COMANDOS-VIRTUALBOX.md):
+> cheatsheet de `VBoxManage` (listar, encender/apagar, snapshots, crear otra VM desde
+> otro ISO, redes, discos, clonar…).
 
 ## Servidor objetivo
 
