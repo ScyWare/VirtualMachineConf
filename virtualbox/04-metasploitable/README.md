@@ -51,6 +51,47 @@ ssh -p 2222 msfadmin@127.0.0.1      # password: msfadmin
 > Si ya usaste `127.0.0.1:2222` para otra VM antes:
 > `ssh-keygen -f ~/.ssh/known_hosts -R "[127.0.0.1]:2222"` y reconecta.
 
+```bash
+ssh -p 2222 \
+    -o HostKeyAlgorithms=+ssh-rsa \
+    -o PubkeyAcceptedAlgorithms=+ssh-rsa \
+    -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group-exchange-sha1 \
+    -o Ciphers=+aes128-cbc,3des-cbc \
+    -o MACs=+hmac-sha1 \
+    msfadmin@127.0.0.1
+```
+
+contraseña: `msfadmin`.
+
+> **Por qué:** Metasploitable2 corre OpenSSH 4.7 (2007) y solo ofrece `ssh-rsa`/`ssh-dss`;
+> los clientes modernos los rechazan por inseguros (`no matching host key type`). Hay que
+> permitirlos explícitamente en el cliente. Aplica igual cuando esté en `.14` (host-only).
+
+Para no repetir las opciones, déjalas fijas en `~/.ssh/config` (en el host):
+
+```
+Host msf-nat
+    HostName 127.0.0.1
+    Port 2222
+    User msfadmin
+    HostKeyAlgorithms +ssh-rsa
+    PubkeyAcceptedAlgorithms +ssh-rsa
+    KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group-exchange-sha1
+    Ciphers +aes128-cbc,3des-cbc
+    MACs +hmac-sha1
+
+Host msf
+    HostName 192.168.56.14
+    User msfadmin
+    HostKeyAlgorithms +ssh-rsa
+    PubkeyAcceptedAlgorithms +ssh-rsa
+    KexAlgorithms +diffie-hellman-group1-sha1,diffie-hellman-group-exchange-sha1
+    Ciphers +aes128-cbc,3des-cbc
+    MACs +hmac-sha1
+```
+
+Así te conectas con `ssh msf-nat` (por NAT) o `ssh msf` (en host-only `.14`).
+
 ---
 
 ## 3. Fijar IP estática `.14` (por SSH, editando /etc/network/interfaces)
@@ -84,10 +125,20 @@ VBoxManage modifyvm VictimMetasploitable --natpf1 delete ssh
 VBoxManage modifyvm VictimMetasploitable --nic1 hostonly --hostonlyadapter1 vboxnet0
 VBoxManage startvm VictimMetasploitable --type headless
 
-# Verificar desde el host (o desde Kali .10)
+# Verificar desde el host (o desde Kali .10) — usa las opciones legacy o `ssh msf`
 sleep 45
-ssh msfadmin@192.168.56.14          # password: msfadmin
+ssh msf                             # (alias de ~/.ssh/config) password: msfadmin
 #   dentro: ip -4 a  ->  debe mostrar 192.168.56.14
+
+# si no funciona
+
+ssh \
+  -o HostKeyAlgorithms=+ssh-rsa \
+  -o PubkeyAcceptedAlgorithms=+ssh-rsa \
+  -o KexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group-exchange-sha1 \
+  -o Ciphers=+aes128-cbc,3des-cbc \
+  -o MACs=+hmac-sha1 \
+  msfadmin@192.168.56.14
 
 # Congelar en estado limpio (nombre CleanState, como el resto del lab)
 VBoxManage controlvm VictimMetasploitable poweroff
